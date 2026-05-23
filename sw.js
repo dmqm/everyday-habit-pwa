@@ -2,7 +2,7 @@
  * 小日常 PWA - Service Worker 离线缓存
  */
 
-const CACHE_NAME = 'everyday-cache-v5';
+const CACHE_NAME = 'everyday-cache-v6';
 
 // 需要预缓存的资源列表 (使用相对路径以适配 GitHub Pages)
 const ASSETS_TO_CACHE = [
