@@ -22,8 +22,8 @@
   <!-- Full-bleed White Background (No borders) -->
   <rect width="512" height="512" fill="#FFFFFF" />
 
-  <!-- Four Leaf Clover / Growth Sprout Structure (Scaled up to fill the canvas nicely) -->
-  <g transform="translate(256, 256) scale(1.6)">
+  <!-- Four Leaf Clover / Growth Sprout Structure (Centered and scaled up to 2.2x to make it very prominent) -->
+  <g transform="translate(256, 230) scale(2.2)">
     <!-- Stem -->
     <path d="M 0 35 Q 20 85 5 110" fill="none" stroke="#34D399" stroke-width="12" stroke-linecap="round" />
     
