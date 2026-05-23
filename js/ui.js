@@ -416,46 +416,25 @@ export const UI = {
     detailCard.querySelector('.detail-max-streak-num').textContent = stats.maxStreak;
     detailCard.querySelector('.detail-total-num').textContent = stats.totalCheckins;
 
-    // 渲染日历网格
+    // 渲染近期 30 天网格
     const calendarGrid = detailCard.querySelector('.calendar-month-grid');
     const calendarMonthTitle = detailCard.querySelector('.calendar-month-title');
     if (!calendarGrid) return;
 
+    calendarGrid.classList.add('recent-30-days');
     calendarGrid.innerHTML = '';
-    
-    // 获取当月信息
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth(); // 0-11
-    
-    const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
-    calendarMonthTitle.textContent = `${year}年 ${monthNames[month]}`;
+    calendarMonthTitle.textContent = `近期 30 天打卡记录`;
 
-    // 获取当月第一天是周几，以及当月总天数
-    const firstDay = new Date(year, month, 1);
-    const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // 转换为 0=周一, 6=周日
-    
-    const totalDays = new Date(year, month + 1, 0).getDate();
-
-    // 星期头部渲染
-    const weekHeaders = ['一', '二', '三', '四', '五', '六', '日'];
-    weekHeaders.forEach(w => {
-      const el = document.createElement('div');
-      el.className = 'calendar-grid-header';
-      el.textContent = w;
-      calendarGrid.appendChild(el);
-    });
-
-    // 填充第一天前的空白格子
-    for (let i = 0; i < firstDayIndex; i++) {
-      const el = document.createElement('div');
-      el.className = 'calendar-grid-empty';
-      calendarGrid.appendChild(el);
+    // 生成最近 30 天的日期数组 (从 29 天前到今天)
+    const dates = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      dates.push(d);
     }
 
-    // 渲染具体日期天数
-    for (let day = 1; day <= totalDays; day++) {
-      const d = new Date(year, month, day);
+    // 渲染网格
+    dates.forEach(d => {
       const dateStr = AppCore.getLocalDateString(d);
       const isDone = stats.history.includes(dateStr);
       const isActive = AppCore.isHabitActiveOnDate(habit, d);
@@ -464,16 +443,20 @@ export const UI = {
       const el = document.createElement('div');
       el.className = `calendar-grid-day ${isDone ? 'completed' : ''} ${isActive ? 'active' : 'inactive'} ${isToday ? 'is-today' : ''}`;
       
+      const dayNum = d.getDate();
+      const displayText = dayNum === 1 ? `${d.getMonth() + 1}/${dayNum}` : `${dayNum}`;
+
       if (isDone) {
         el.style.backgroundColor = habit.color;
         el.style.color = '#FFFFFF';
         el.innerHTML = '<span class="check-mark">✓</span>';
       } else {
-        el.innerHTML = `<span>${day}</span>`;
+        el.innerHTML = `<span>${displayText}</span>`;
       }
-
+      
+      el.title = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
       calendarGrid.appendChild(el);
-    }
+    });
   },
 
   /**
@@ -602,16 +585,23 @@ export const UI = {
    */
   bindHabitModalEvents() {
     const modal = document.getElementById('modal-habit');
-    const btnAdd = document.getElementById('btn-settings-add-habit');
+    const btnAddSettings = document.getElementById('btn-settings-add-habit');
+    const btnAddHeader = document.getElementById('btn-add-habit');
     const btnClose = modal.querySelector('.modal-close');
     const btnCancel = modal.querySelector('#btn-habit-cancel');
     const form = modal.querySelector('#form-habit');
 
-    // 打开新建弹窗
-    if (btnAdd) {
-      btnAdd.addEventListener('click', () => {
-        this.openHabitModal();
-      });
+    const handleAddClick = (e) => {
+      if (e) e.preventDefault();
+      this.openHabitModal();
+    };
+
+    // 打开新建弹窗（绑定多个可能存在的按钮，保证高容错性）
+    if (btnAddSettings) {
+      btnAddSettings.addEventListener('click', handleAddClick);
+    }
+    if (btnAddHeader) {
+      btnAddHeader.addEventListener('click', handleAddClick);
     }
 
     // 关闭弹窗
