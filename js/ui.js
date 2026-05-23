@@ -50,8 +50,6 @@ export const UI = {
       this.renderTodayTab();
     } else if (activeTab === 'stats') {
       this.renderStatsTab();
-    } else if (activeTab === 'habits') {
-      this.renderHabitsTab();
     } else if (activeTab === 'settings') {
       this.renderSettingsTab();
     }
@@ -510,7 +508,7 @@ export const UI = {
    * 习惯管理页 - 渲染
    */
   renderHabitsTab() {
-    const panel = document.getElementById('panel-habits');
+    const panel = document.getElementById('panel-settings');
     const habitsList = panel.querySelector('.manage-habits-list');
     if (!habitsList) return;
 
@@ -594,6 +592,9 @@ export const UI = {
 
     const selectAnim = panel.querySelector('#settings-anim');
     if (selectAnim) selectAnim.value = settings.checkinAnimation;
+
+    // 渲染嵌入在设置中的习惯管理列表
+    this.renderHabitsTab();
   },
 
   /**
@@ -601,7 +602,7 @@ export const UI = {
    */
   bindHabitModalEvents() {
     const modal = document.getElementById('modal-habit');
-    const btnAdd = document.getElementById('btn-add-habit');
+    const btnAdd = document.getElementById('btn-settings-add-habit');
     const btnClose = modal.querySelector('.modal-close');
     const btnCancel = modal.querySelector('#btn-habit-cancel');
     const form = modal.querySelector('#form-habit');

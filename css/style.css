@@ -592,6 +592,14 @@ html.dark .habit-card.completed {
   box-shadow: var(--shadow-sm);
 }
 
+/* 嵌入在设置卡片中的习惯列表项样式优化 */
+.settings-group .manage-habit-item {
+  background-color: var(--bg-primary);
+  box-shadow: none;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
 .manage-habit-left {
   display: flex;
   align-items: center;
