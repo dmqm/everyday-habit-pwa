@@ -409,9 +409,7 @@ export const UI = {
     detailCard.style.setProperty('--theme-color', habit.color);
     detailCard.style.setProperty('--theme-bg', habit.bgColor);
 
-    detailCard.querySelector('.detail-streak-num').textContent = stats.currentStreak;
-    detailCard.querySelector('.detail-max-streak-num').textContent = stats.maxStreak;
-    detailCard.querySelector('.detail-total-num').textContent = stats.totalCheckins;
+
 
     // 渲染近期打卡记录网格
     const calendarGrid = detailCard.querySelector('.calendar-month-grid');
