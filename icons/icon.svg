@@ -1,16 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4CE1B6" />
-      <stop offset="100%" stop-color="#24B1B7" />
-    </linearGradient>
-    
-    <!-- White Card Shadow -->
-    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1B7478" flood-opacity="0.18" />
-    </filter>
-    
     <!-- Clover Leaf Gradients -->
     <linearGradient id="leaf1" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#A5F3FC" />
@@ -30,14 +19,11 @@
     </linearGradient>
   </defs>
 
-  <!-- Full-bleed Outer Background -->
-  <rect width="512" height="512" fill="url(#bgGrad)" />
+  <!-- Full-bleed White Background (No borders) -->
+  <rect width="512" height="512" fill="#FFFFFF" />
 
-  <!-- Inner Soft White Circular Card -->
-  <rect x="96" y="96" width="320" height="320" rx="80" fill="#FFFFFF" filter="url(#cardShadow)" />
-
-  <!-- Four Leaf Clover / Growth Sprout Structure -->
-  <g transform="translate(256, 246)">
+  <!-- Four Leaf Clover / Growth Sprout Structure (Scaled up to fill the canvas nicely) -->
+  <g transform="translate(256, 256) scale(1.6)">
     <!-- Stem -->
     <path d="M 0 35 Q 20 85 5 110" fill="none" stroke="#34D399" stroke-width="12" stroke-linecap="round" />
     
