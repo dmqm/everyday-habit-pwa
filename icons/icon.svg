@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4CE1B6" />
+      <stop offset="100%" stop-color="#24B1B7" />
+    </linearGradient>
+    
+    <!-- White Card Shadow -->
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1B7478" flood-opacity="0.18" />
+    </filter>
+    
+    <!-- Clover Leaf Gradients -->
+    <linearGradient id="leaf1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A5F3FC" />
+      <stop offset="100%" stop-color="#22D3EE" />
+    </linearGradient>
+    <linearGradient id="leaf2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A7F3D0" />
+      <stop offset="100%" stop-color="#34D399" />
+    </linearGradient>
+    <linearGradient id="leaf3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047" />
+      <stop offset="100%" stop-color="#FACC15" />
+    </linearGradient>
+    <linearGradient id="leaf4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCA5A5" />
+      <stop offset="100%" stop-color="#F87171" />
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed Outer Background -->
+  <rect width="512" height="512" fill="url(#bgGrad)" />
+
+  <!-- Inner Soft White Circular Card -->
+  <rect x="96" y="96" width="320" height="320" rx="80" fill="#FFFFFF" filter="url(#cardShadow)" />
+
+  <!-- Four Leaf Clover / Growth Sprout Structure -->
+  <g transform="translate(256, 246)">
+    <!-- Stem -->
+    <path d="M 0 35 Q 20 85 5 110" fill="none" stroke="#34D399" stroke-width="12" stroke-linecap="round" />
+    
+    <!-- Top-Left Leaf (Blue/Teal) -->
+    <path d="M 0 0 C -45 -10 -70 -45 -40 -70 C -15 -90 10 -60 0 0" fill="url(#leaf1)" opacity="0.95" />
+    
+    <!-- Top-Right Leaf (Green) -->
+    <path d="M 0 0 C 10 -45 45 -70 70 -40 C 90 -15 60 10 0 0" fill="url(#leaf2)" opacity="0.95" />
+    
+    <!-- Bottom-Right Leaf (Yellow) -->
+    <path d="M 0 0 C 45 10 70 45 40 70 C 15 90 -10 60 0 0" fill="url(#leaf3)" opacity="0.95" />
+    
+    <!-- Bottom-Left Leaf (Pink/Red) -->
+    <path d="M 0 0 C -10 45 -45 70 -70 40 C -90 15 -60 -10 0 0" fill="url(#leaf4)" opacity="0.95" />
+    
+    <!-- Small Center Sprout Bud -->
+    <circle cx="0" cy="0" r="10" fill="#FFFFFF" />
+  </g>
+</svg>

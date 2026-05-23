@@ -1,0 +1,1070 @@
+/*
+ * 小日常 PWA - iOS 风格视觉与动效设计系统
+ */
+
+/* 核心变量与设计令牌 */
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  
+  /* 浅色主题变量 */
+  --bg-primary: #F4F7F6;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --text-primary: #1C1C1E;
+  --text-secondary: #8E8E93;
+  --text-tertiary: #AEAEB2;
+  --border-color: #E5E5EA;
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  --accent-color: #24B1B7;
+  --accent-light: #EBF9F5;
+  --danger-color: #FF3B30;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(27, 116, 120, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 深色主题变量 */
+html.dark {
+  --bg-primary: #0A0A0C;
+  --bg-secondary: #16161A;
+  --bg-card: #1C1C21;
+  --text-primary: #F2F2F7;
+  --text-secondary: #98989D;
+  --text-tertiary: #636366;
+  --border-color: #2C2C2E;
+  --nav-bg: rgba(22, 22, 26, 0.82);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* 全局重置与排版 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* PWA App 主容器 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-bottom: calc(75px + var(--safe-area-bottom));
+}
+
+/* 顶部导航栏 (Header) */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent-color), #4CE1B6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 选项卡面板容器 */
+.tab-panel {
+  display: none;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 今日 Tab 特有样式 */
+.today-summary-card {
+  background-color: var(--bg-secondary);
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CE1B6, var(--accent-color));
+  width: 0%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* iOS 风格顶部周历 */
+.week-calendar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 8px;
+}
+
+.week-days-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+  gap: 6px;
+}
+
+.week-days-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.calendar-day {
+  flex: 1;
+  min-width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.calendar-day .day-name {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.calendar-day .day-number {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.calendar-day.selected {
+  background-color: var(--accent-color);
+  transform: scale(1.05);
+}
+
+.calendar-day.selected .day-name,
+.calendar-day.selected .day-number {
+  color: #FFFFFF;
+}
+
+.calendar-day.is-today:not(.selected) {
+  border: 1.5px solid var(--accent-color);
+}
+
+/* 今日习惯卡片列表 */
+.today-habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.habit-card {
+  --theme-color: var(--accent-color);
+  --theme-bg: var(--accent-light);
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-md);
+  border-left: 6px solid var(--theme-color);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.habit-card:active {
+  transform: scale(0.97);
+}
+
+.habit-card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.habit-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  font-size: 24px;
+  transition: transform 0.3s ease;
+}
+
+.habit-card:hover .habit-card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.habit-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.habit-card-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.habit-card-slogan {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.habit-card-streak {
+  font-size: 11px;
+  color: #FF9500;
+  font-weight: 600;
+  background-color: rgba(255, 149, 0, 0.1);
+  padding: 2px 6px;
+  border-radius: 6px;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+/* 打卡勾选按钮 */
+.btn-checkin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--theme-color);
+  color: var(--theme-color);
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-checkin svg {
+  transform: scale(0);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 已完成习惯状态 */
+.habit-card.completed {
+  background-color: var(--theme-bg);
+  border-left-color: var(--text-tertiary);
+  opacity: 0.85;
+}
+
+html.dark .habit-card.completed {
+  background-color: rgba(28, 28, 33, 0.6);
+  opacity: 0.6;
+}
+
+.habit-card.completed .habit-card-name {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.habit-card.completed .btn-checkin {
+  background-color: var(--theme-color);
+  color: #FFFFFF;
+  border-color: var(--theme-color);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.habit-card.completed .btn-checkin svg {
+  transform: scale(1);
+}
+
+/* 统计 Tab 特有样式 */
+.stats-dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  background-color: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-box-title {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-box-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.stat-box-sub {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* 详情分析卡片 */
+.habit-details-card {
+  background-color: var(--bg-secondary);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 24px;
+  transition: all 0.3s;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.detail-selector {
+  flex: 1;
+  max-width: 220px;
+}
+
+.detail-selector select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.detail-metrics {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 24px;
+  background-color: var(--bg-primary);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.metric-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* 月历打卡网络图 */
+.calendar-month-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.calendar-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  justify-items: center;
+}
+
+.calendar-grid-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-grid-empty {
+  width: 32px;
+  height: 32px;
+}
+
+.calendar-grid-day {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: all 0.2s;
+  position: relative;
+}
+
+.calendar-grid-day.inactive {
+  opacity: 0.35;
+}
+
+.calendar-grid-day.is-today {
+  box-shadow: inset 0 0 0 1.5px var(--text-secondary);
+}
+
+.calendar-grid-day.completed {
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.calendar-grid-day.completed .check-mark {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.6); }
+  to { transform: scale(1); }
+}
+
+/* 成就勋章样式 */
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.badge-item {
+  background-color: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 14px 8px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  transition: all 0.3s;
+}
+
+.badge-item.locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.badge-icon {
+  font-size: 28px;
+}
+
+.badge-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.badge-desc {
+  font-size: 9px;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+/* 习惯管理 Tab 样式 */
+.manage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.manage-habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.manage-habit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.manage-habit-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.manage-habit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 20px;
+}
+
+.manage-habit-meta h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.manage-habit-meta p {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.manage-habit-right {
+  display: flex;
+  gap: 8px;
+}
+
+/* 设置 Tab 样式 */
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-group {
+  background-color: var(--bg-secondary);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.settings-group-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin: 16px 20px 8px 20px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-label {
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* 输入控件与按钮样式 */
+select, input[type="text"], input[type="time"] {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+/* 开关滑块样式 (Switch Toggle) */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 51px;
+  height: 31px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--border-color);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 27px;
+  width: 27px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+input:checked + .slider {
+  background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* 按钮通用样式 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  gap: 6px;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: #FFFFFF;
+}
+
+.btn-primary:active {
+  background-color: #1F9C9F;
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
+.btn-danger {
+  background-color: rgba(255, 59, 48, 0.1);
+  color: var(--danger-color);
+}
+
+.btn-danger:active {
+  background-color: rgba(255, 59, 48, 0.2);
+  transform: scale(0.97);
+}
+
+.btn-icon {
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* iOS 风格的 Modal 弹窗样式 */
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--bg-secondary);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  padding: 24px 20px calc(24px + var(--safe-area-bottom)) 20px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.15, 0.85, 0.35, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal.active .modal-content {
+  transform: translateY(0);
+}
+
+@media (min-width: 576px) {
+  .modal {
+    align-items: center;
+  }
+  .modal-content {
+    border-radius: 24px;
+    padding: 24px;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* 弹窗内的表单布局 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group input[type="time"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+/* 可爱表情选择网格 */
+.modal-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.emoji-item {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 22px;
+  background-color: var(--bg-primary);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.emoji-item.selected {
+  border-color: var(--accent-color);
+  background-color: var(--accent-light);
+  transform: scale(1.1);
+}
+
+/* 颜色选择网格 */
+.modal-color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.color-item {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid var(--bg-secondary);
+  outline: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.color-item.selected {
+  outline-color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+/* 自定义星期多选器 */
+.custom-freq-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.custom-freq-days label {
+  cursor: pointer;
+}
+
+.custom-freq-days input[type="checkbox"] {
+  display: none;
+}
+
+.custom-freq-days span {
+  display: block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+
+.custom-freq-days input[type="checkbox"]:checked + span {
+  background-color: var(--accent-color);
+  color: #FFFFFF;
+  border-color: var(--accent-color);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+}
+
+/* 底部固定 TabBar (iOS Style Navigation) */
+.app-tabbar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: calc(60px + var(--safe-area-bottom));
+  padding-bottom: var(--safe-area-bottom);
+  background-color: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+  height: 100%;
+  flex: 1;
+  gap: 4px;
+}
+
+.tab-item svg {
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.tab-item.active {
+  color: var(--accent-color);
+}
+
+.tab-item.active svg {
+  color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+/* 粒子 Confetti 全屏画布 */
+#confetti-canvas {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 999;
+  pointer-events: none;
+}
+
+/* 无数据时样式 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  text-align: center;
+  background-color: var(--bg-secondary);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 48px;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* 大屏响应式优化 */
+@media (min-width: 768px) {
+  .app-container {
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 0 30px rgba(0,0,0,0.05);
+    background-color: var(--bg-primary);
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    padding-bottom: 20px;
+    min-height: 100vh;
+  }
+  
+  .app-tabbar {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: none;
+    height: 65px;
+    padding-bottom: 0;
+  }
+}

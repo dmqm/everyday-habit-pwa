@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  
+  <title>小日常 - 习惯打卡</title>
+  
+  <!-- PWA & Apple IOS Configuration -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="小日常">
+  <link rel="apple-touch-icon" href="./icons/icon.svg">
+  
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <!-- 纸屑特效 Canvas 画布 -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- PWA 应用主界面 -->
+  <div class="app-container">
+    
+    <!-- 顶部状态栏/导航栏 -->
+    <header class="app-header">
+      <div class="brand-wrapper">
+        <!-- 迷你四叶草 Logo -->
+        <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="32" height="32">
+          <defs>
+            <linearGradient id="miniBg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4CE1B6" />
+              <stop offset="100%" stop-color="#24B1B7" />
+            </linearGradient>
+          </defs>
+          <rect width="512" height="512" rx="120" fill="url(#miniBg)" />
+          <rect x="96" y="96" width="320" height="320" rx="80" fill="#FFFFFF" />
+          <g transform="translate(256, 246)">
+            <path d="M 0 35 Q 20 85 5 110" fill="none" stroke="#34D399" stroke-width="15" stroke-linecap="round" />
+            <path d="M 0 0 C -45 -10 -70 -45 -40 -70 C -15 -90 10 -60 0 0" fill="#22D3EE" />
+            <path d="M 0 0 C 10 -45 45 -70 70 -40 C 90 -15 60 10 0 0" fill="#34D399" />
+            <path d="M 0 0 C 45 10 70 45 40 70 C 15 90 -10 60 0 0" fill="#FACC15" />
+            <path d="M 0 0 C -10 45 -45 70 -70 40 C -90 15 -60 -10 0 0" fill="#F87171" />
+            <circle cx="0" cy="0" r="12" fill="#FFFFFF" />
+          </g>
+        </svg>
+        <span class="app-title">小日常</span>
+      </div>
+      
+      <!-- 右侧快速添加习惯按钮 -->
+      <button class="btn btn-primary btn-icon" id="btn-add-habit" aria-label="新建习惯">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- TAB 1: 今日打卡页面 -->
+    <main class="tab-panel active" id="panel-today">
+      <!-- 进度概要卡片 -->
+      <div class="today-summary-card">
+        <div class="progress-header">
+          <span class="progress-text">正在加载今日进度...</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+      </div>
+      
+      <!-- iOS 风格滚动周历 -->
+      <div class="week-calendar">
+        <div class="week-days-container">
+          <!-- JS 动态渲染 -->
+        </div>
+      </div>
+      
+      <!-- 打卡习惯卡片容器 -->
+      <div class="today-habits-list">
+        <!-- JS 动态渲染 -->
+      </div>
+    </main>
+
+    <!-- TAB 2: 统计大盘页面 -->
+    <main class="tab-panel" id="panel-stats">
+      <!-- 数据概览 -->
+      <div class="stats-dashboard">
+        <div class="stat-box">
+          <span class="stat-box-title">习惯总数</span>
+          <span class="stat-box-value" id="stat-total-habits">0</span>
+          <span class="stat-box-sub">已规划计划</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-box-title">历史打卡</span>
+          <span class="stat-box-value" id="stat-total-checkins">0</span>
+          <span class="stat-box-sub">滴水穿石累计数</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-box-title">最高连签</span>
+          <span class="stat-box-value" id="stat-max-streak">0天</span>
+          <span class="stat-box-sub" id="stat-max-streak-habit">无</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-box-title">今天日期</span>
+          <span class="stat-box-value" style="font-size: 16px; padding-top: 6px;" id="stat-today-date">05-23</span>
+          <span class="stat-box-sub">星期六</span>
+        </div>
+      </div>
+
+      <!-- 单个习惯月历打卡热力图 -->
+      <section class="habit-details-card">
+        <div class="detail-header">
+          <h3 class="section-title">📊 习惯分析</h3>
+          <div class="detail-selector">
+            <select id="stats-habit-select">
+              <!-- JS 动态渲染 -->
+            </select>
+          </div>
+        </div>
+        
+        <!-- 数据小指标 -->
+        <div class="detail-metrics">
+          <div class="metric-item">
+            <span class="metric-label">当前连续</span>
+            <span class="metric-val"><strong class="detail-streak-num">0</strong> 天</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">最长连续</span>
+            <span class="metric-val"><strong class="detail-max-streak-num">0</strong> 天</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">累计打卡</span>
+            <span class="metric-val"><strong class="detail-total-num">0</strong> 次</span>
+          </div>
+        </div>
+
+        <!-- 月历容器 -->
+        <div class="calendar-month-title">当月打卡日志</div>
+        <div class="calendar-month-grid">
+          <!-- JS 动态渲染 -->
+        </div>
+      </section>
+
+      <!-- 成就徽章 -->
+      <section class="achievements-section">
+        <h3 class="section-title">🏆 荣誉徽章</h3>
+        <div class="badges-grid">
+          <!-- JS 动态渲染 -->
+        </div>
+      </section>
+    </main>
+
+    <!-- TAB 3: 习惯管理页面 -->
+    <main class="tab-panel" id="panel-habits">
+      <div class="manage-header">
+        <h3 class="section-title">⚙️ 习惯管理</h3>
+      </div>
+      <div class="manage-habits-list">
+        <!-- JS 动态渲染 -->
+      </div>
+    </main>
+
+    <!-- TAB 4: 系统设置页面 -->
+    <main class="tab-panel" id="panel-settings">
+      <h3 class="section-title" style="margin-bottom: 20px;">⚙️ 应用设置</h3>
+      
+      <div class="settings-list">
+        
+        <!-- 个性化 -->
+        <div class="settings-group-title">个性化</div>
+        <div class="settings-group">
+          <div class="settings-row">
+            <span class="settings-row-label">外观主题</span>
+            <select id="settings-theme">
+              <option value="auto">跟随系统</option>
+              <option value="light">清新明亮 (浅色)</option>
+              <option value="dark">暗黑视网膜 (深色)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <span class="settings-row-label">打卡音效</span>
+            <label class="switch">
+              <input type="checkbox" id="settings-sound" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <span class="settings-row-label">打卡动画</span>
+            <select id="settings-anim">
+              <option value="confetti">彩色五彩纸屑</option>
+              <option value="none">无动画</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 数据管理 -->
+        <div class="settings-group-title">数据管理</div>
+        <div class="settings-group">
+          <div class="settings-row">
+            <span class="settings-row-label">导出本地备份</span>
+            <button class="btn btn-secondary btn-sm" id="btn-data-export">导出 JSON</button>
+          </div>
+          <div class="settings-row">
+            <span class="settings-row-label">导入本地备份</span>
+            <button class="btn btn-secondary btn-sm" id="btn-data-import">选择文件</button>
+            <input type="file" id="file-import-input" accept=".json" style="display: none;">
+          </div>
+          <div class="settings-row">
+            <span class="settings-row-label">重置所有数据</span>
+            <button class="btn btn-danger btn-sm" id="btn-data-clear">清空并恢复默认</button>
+          </div>
+        </div>
+
+        <!-- 关于与信息 -->
+        <div class="settings-group-title">关于应用</div>
+        <div class="settings-group">
+          <div class="settings-row">
+            <span class="settings-row-label">小日常 Web PWA</span>
+            <span style="font-size: 13px; color: var(--text-secondary);">版本 1.0.0</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-row-label">离线支持状态</span>
+            <span id="pwa-status" style="font-size: 13px; color: #34D399; font-weight: 600;">已激活离线运行</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- 底部固定 Tabbar -->
+    <nav class="app-tabbar">
+      <div class="tab-item active" data-tab="today">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>今日打卡</span>
+      </div>
+      <div class="tab-item" data-tab="stats">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>打卡统计</span>
+      </div>
+      <div class="tab-item" data-tab="habits">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        <span>习惯管理</span>
+      </div>
+      <div class="tab-item" data-tab="settings">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>设置</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- iOS 底部抽屉风格弹窗 (新建 / 编辑习惯) -->
+  <div class="modal" id="modal-habit">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">新建习惯</h3>
+        <button class="modal-close" aria-label="关闭弹窗">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <form id="form-habit">
+        <!-- 习惯名称 -->
+        <div class="form-group">
+          <label for="habit-name">习惯名字</label>
+          <input type="text" id="habit-name" maxlength="10" placeholder="例如：背单词、吃水果" required>
+        </div>
+
+        <!-- 鼓励寄语 -->
+        <div class="form-group">
+          <label for="habit-slogan">鼓励语 / 签到寄语</label>
+          <input type="text" id="habit-slogan" maxlength="25" placeholder="例如：坚持下去，你会感谢现在的自己">
+        </div>
+
+        <!-- 表情图标选择网格 -->
+        <div class="form-group">
+          <label>选择一个可爱图标</label>
+          <div class="modal-emoji-grid">
+            <div class="emoji-item selected">🌅</div>
+            <div class="emoji-item">🥛</div>
+            <div class="emoji-item">📖</div>
+            <div class="emoji-item">🏃</div>
+            <div class="emoji-item">🧘</div>
+            <div class="emoji-item">💤</div>
+            <div class="emoji-item">🍎</div>
+            <div class="emoji-item">💻</div>
+            <div class="emoji-item">✏️</div>
+            <div class="emoji-item">🧹</div>
+            <div class="emoji-item">🌿</div>
+            <div class="emoji-item">💊</div>
+          </div>
+        </div>
+
+        <!-- 主题色选择网格 -->
+        <div class="form-group">
+          <label>卡片颜色</label>
+          <div class="modal-color-grid">
+            <!-- 珊瑚粉 -->
+            <div class="color-item selected" data-color="#FF8E94" data-bg="#FFF0F1" style="background-color: #FF8E94;"></div>
+            <!-- 薄荷绿 -->
+            <div class="color-item" data-color="#4CE1B6" data-bg="#EBF9F5" style="background-color: #4CE1B6;"></div>
+            <!-- 天空蓝 -->
+            <div class="color-item" data-color="#5AC8FA" data-bg="#E6F5FC" style="background-color: #5AC8FA;"></div>
+            <!-- 罗兰紫 -->
+            <div class="color-item" data-color="#AF52DE" data-bg="#F7EFFF" style="background-color: #AF52DE;"></div>
+            <!-- 柠檬黄 -->
+            <div class="color-item" data-color="#FFCC00" data-bg="#FFF9E6" style="background-color: #FFCC00;"></div>
+            <!-- 桃子橙 -->
+            <div class="color-item" data-color="#FF9500" data-bg="#FFF4E6" style="background-color: #FF9500;"></div>
+          </div>
+        </div>
+
+        <!-- 频次设置 -->
+        <div class="form-group">
+          <label for="habit-frequency">打卡频次</label>
+          <select id="habit-frequency">
+            <option value="daily">每天打卡</option>
+            <option value="weekdays">仅工作日 (周一至周五)</option>
+            <option value="weekends">仅周末 (周六与周日)</option>
+            <option value="custom">自定义打卡天...</option>
+          </select>
+          <!-- 自定义周几多选框 -->
+          <div class="custom-freq-days" style="display: none;">
+            <label><input type="checkbox" value="1" checked><span>一</span></label>
+            <label><input type="checkbox" value="2" checked><span>二</span></label>
+            <label><input type="checkbox" value="3" checked><span>三</span></label>
+            <label><input type="checkbox" value="4" checked><span>四</span></label>
+            <label><input type="checkbox" value="5" checked><span>五</span></label>
+            <label><input type="checkbox" value="6" checked><span>六</span></label>
+            <label><input type="checkbox" value="7" checked><span>日</span></label>
+          </div>
+        </div>
+
+        <!-- 提醒时间 -->
+        <div class="form-group">
+          <label for="habit-reminder">提醒时间 (可选)</label>
+          <input type="time" id="habit-reminder">
+        </div>
+
+        <!-- 弹窗提交控制 -->
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-habit-cancel">取消</button>
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 初始化逻辑 -->
+  <script type="module">
+    import { UI } from './js/ui.js';
+    
+    // 渲染打卡统计页的日期文字
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const date = String(today.getDate()).padStart(2, '0');
+    const dayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    
+    document.getElementById('stat-today-date').textContent = `${month}-${date}`;
+    const weekSub = document.querySelector('#stat-today-date + .stat-box-sub');
+    if (weekSub) {
+      weekSub.textContent = dayNames[today.getDay()];
+    }
+
+    // 初始化 UI
+    UI.init();
+  </script>
+
+  <!-- PWA Service Worker 注册 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // 使用相对路径以便在 GitHub Pages 子目录下工作
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => {
+            console.log('ServiceWorker 注册成功: ', reg.scope);
+            document.getElementById('pwa-status').textContent = '已激活离线运行';
+            document.getElementById('pwa-status').style.color = '#34D399';
+          })
+          .catch(err => {
+            console.error('ServiceWorker 注册失败: ', err);
+            document.getElementById('pwa-status').textContent = '未激活 (限在线运行)';
+            document.getElementById('pwa-status').style.color = '#FF9500';
+          });
+      });
+    } else {
+      document.getElementById('pwa-status').textContent = '浏览器不支持离线模式';
+      document.getElementById('pwa-status').style.color = '#FF3B30';
+    }
+  </script>
+
+</body>
+</html>
