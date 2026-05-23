@@ -424,7 +424,6 @@ export const UI = {
     // 动态计算列数以自适应紧凑的网格显示
     let columns = 7;
     if (range === 7) columns = 7;
-    else if (range === 15) columns = 5;
     else if (range === 30) columns = 6;
     else if (range === 100) columns = 10;
 
