@@ -464,11 +464,6 @@ html.dark .habit-card.completed {
   justify-items: center;
 }
 
-.calendar-month-grid.recent-30-days {
-  grid-template-columns: repeat(6, 1fr);
-  row-gap: 10px;
-}
-
 .calendar-grid-header {
   font-size: 11px;
   font-weight: 600;
@@ -486,8 +481,9 @@ html.dark .habit-card.completed {
 }
 
 .calendar-grid-day {
-  width: 32px;
-  height: 32px;
+  width: 100%;
+  max-width: 32px;
+  aspect-ratio: 1;
   border-radius: 50%;
   display: flex;
   align-items: center;

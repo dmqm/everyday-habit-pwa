@@ -105,12 +105,22 @@
 
       <!-- 单个习惯月历打卡热力图 -->
       <section class="habit-details-card">
-        <div class="detail-header">
-          <h3 class="section-title">📊 习惯分析</h3>
-          <div class="detail-selector">
-            <select id="stats-habit-select">
-              <!-- JS 动态渲染 -->
-            </select>
+        <div class="detail-header" style="flex-wrap: wrap; gap: 8px;">
+          <h3 class="section-title" style="margin-bottom: 0;">📊 习惯分析</h3>
+          <div style="display: flex; gap: 8px; flex: 1; justify-content: flex-end; min-width: 250px;">
+            <div class="detail-selector" style="max-width: 130px;">
+              <select id="stats-habit-select">
+                <!-- JS 动态渲染 -->
+              </select>
+            </div>
+            <div class="detail-selector" style="max-width: 120px;">
+              <select id="stats-range-select">
+                <option value="7">近期 7 天</option>
+                <option value="15">近期 15 天</option>
+                <option value="30" selected>近期 30 天</option>
+                <option value="100">近期 100 天</option>
+              </select>
+            </div>
           </div>
         </div>
         
@@ -137,13 +147,6 @@
         </div>
       </section>
 
-      <!-- 成就徽章 -->
-      <section class="achievements-section">
-        <h3 class="section-title">🏆 荣誉徽章</h3>
-        <div class="badges-grid">
-          <!-- JS 动态渲染 -->
-        </div>
-      </section>
     </main>
 
 

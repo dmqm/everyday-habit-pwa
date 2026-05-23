@@ -384,11 +384,8 @@ export const UI = {
       }
     }
 
-    // 3. 渲染单个习惯的打卡统计与日历热力图
+    // 3. 渲染单个习惯的打卡统计与近期记录
     this.renderSelectedHabitStats();
-
-    // 4. 渲染成就徽章
-    this.renderBadges();
   },
 
   /**
@@ -416,18 +413,28 @@ export const UI = {
     detailCard.querySelector('.detail-max-streak-num').textContent = stats.maxStreak;
     detailCard.querySelector('.detail-total-num').textContent = stats.totalCheckins;
 
-    // 渲染近期 30 天网格
+    // 渲染近期打卡记录网格
     const calendarGrid = detailCard.querySelector('.calendar-month-grid');
     const calendarMonthTitle = detailCard.querySelector('.calendar-month-title');
     if (!calendarGrid) return;
 
-    calendarGrid.classList.add('recent-30-days');
-    calendarGrid.innerHTML = '';
-    calendarMonthTitle.textContent = `近期 30 天打卡记录`;
+    const rangeSelector = panel.querySelector('#stats-range-select');
+    const range = rangeSelector ? parseInt(rangeSelector.value) : 30;
 
-    // 生成最近 30 天的日期数组 (从 29 天前到今天)
+    // 动态计算列数以自适应紧凑的网格显示
+    let columns = 7;
+    if (range === 7) columns = 7;
+    else if (range === 15) columns = 5;
+    else if (range === 30) columns = 6;
+    else if (range === 100) columns = 10;
+
+    calendarGrid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    calendarGrid.innerHTML = '';
+    calendarMonthTitle.textContent = `近期 ${range} 天打卡记录`;
+
+    // 生成最近 range 天的日期数组 (从 range-1 天前到今天)
     const dates = [];
-    for (let i = 29; i >= 0; i--) {
+    for (let i = range - 1; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       dates.push(d);
@@ -459,33 +466,6 @@ export const UI = {
     });
   },
 
-  /**
-   * 渲染勋章网格
-   */
-  renderBadges() {
-    const badgesContainer = document.querySelector('.badges-grid');
-    if (!badgesContainer) return;
-
-    const badges = AppCore.getBadges();
-    badgesContainer.innerHTML = '';
-
-    badges.forEach(b => {
-      const item = document.createElement('div');
-      item.className = `badge-item ${b.isUnlocked ? 'unlocked' : 'locked'}`;
-      
-      if (b.isUnlocked) {
-        item.style.backgroundColor = b.color;
-        item.style.color = b.textColor;
-      }
-
-      item.innerHTML = `
-        <div class="badge-icon">${b.icon}</div>
-        <div class="badge-name">${b.name}</div>
-        <div class="badge-desc">${b.desc}</div>
-      `;
-      badgesContainer.appendChild(item);
-    });
-  },
 
   /**
    * 习惯管理页 - 渲染
@@ -860,10 +840,17 @@ export const UI = {
       }
     });
 
-    // 统计页面的习惯切换监听
+    // 统计页面的习惯和时间范围切换监听
     const statsSelector = document.getElementById('stats-habit-select');
     if (statsSelector) {
       statsSelector.addEventListener('change', () => {
+        this.renderSelectedHabitStats();
+      });
+    }
+
+    const rangeSelector = document.getElementById('stats-range-select');
+    if (rangeSelector) {
+      rangeSelector.addEventListener('change', () => {
         this.renderSelectedHabitStats();
       });
     }
