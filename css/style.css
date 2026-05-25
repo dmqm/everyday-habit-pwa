@@ -540,6 +540,10 @@ html.dark .habit-card.completed {
   gap: 12px;
 }
 
+.badges-section {
+  margin-top: 20px;
+}
+
 .badge-item {
   background-color: var(--bg-secondary);
   border-radius: 16px;

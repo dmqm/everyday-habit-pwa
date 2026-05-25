@@ -398,6 +398,33 @@ export const UI = {
 
     // 3. 渲染单个习惯的打卡统计与近期记录
     this.renderSelectedHabitStats();
+
+    // 4. 渲染成就徽章
+    this.renderBadges();
+  },
+
+  renderBadges() {
+    const grid = document.getElementById('badges-grid');
+    const section = document.getElementById('badges-section');
+    if (!grid || !section) return;
+
+    const badges = AppCore.getBadges();
+    if (!badges || badges.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+
+    grid.innerHTML = badges.map(b => {
+      const lockedClass = b.isUnlocked ? '' : 'locked';
+      return `
+        <div class="badge-item ${lockedClass}">
+          <span class="badge-icon">${b.icon}</span>
+          <span class="badge-name">${b.name}</span>
+          <span class="badge-desc">${b.desc}</span>
+        </div>
+      `;
+    }).join('');
   },
 
   /**
