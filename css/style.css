@@ -501,6 +501,31 @@ html.dark .habit-card.completed {
   position: relative;
 }
 
+.calendar-grid-day.empty {
+  background-color: transparent;
+}
+
+.calendar-grid-day.intensity-0 {
+  background-color: var(--bg-primary);
+  color: var(--text-tertiary);
+}
+
+.calendar-grid-day.intensity-1 {
+  background-color: var(--theme-bg, #E0F2FE);
+  color: var(--text-primary);
+}
+
+.calendar-grid-day.intensity-2 {
+  background-color: var(--theme-color, #38BDF8);
+  color: #fff;
+}
+
+.calendar-grid-day.intensity-3 {
+  background-color: var(--theme-color, #0EA5E9);
+  opacity: 0.85;
+  color: #fff;
+}
+
 .calendar-grid-day.inactive {
   opacity: 0.35;
 }
