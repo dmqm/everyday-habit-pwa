@@ -891,6 +891,12 @@ input:checked + .slider:before {
   font-size: 14px;
 }
 
+.char-count {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
 /* 可爱表情选择网格 */
 .modal-emoji-grid {
   display: grid;

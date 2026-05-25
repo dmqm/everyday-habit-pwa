@@ -10,6 +10,7 @@ let selectedDate = new Date(); // 当前选中的日期
 let activeTab = 'today';       // 当前处于的 Tab 页: today, stats, habits, settings
 let confettiParticles = [];    // 纸屑粒子缓存
 let confettiAnimationId = null; // 纸屑动画 ID
+let audioCtx = null;           // AudioContext 单例
 
 export const UI = {
   init() {
@@ -263,9 +264,15 @@ export const UI = {
    */
   playSuccessSound() {
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const ctx = audioCtx;
       
       // 第一个频率：低沉的波形
       const osc1 = ctx.createOscillator();
@@ -630,6 +637,16 @@ export const UI = {
       });
     }
 
+    // 字数计数器实时更新
+    const nameInput = modal.querySelector('#habit-name');
+    const sloganInput = modal.querySelector('#habit-slogan');
+    if (nameInput) {
+      nameInput.addEventListener('input', () => this.updateCharCounts());
+    }
+    if (sloganInput) {
+      sloganInput.addEventListener('input', () => this.updateCharCounts());
+    }
+
     // 提交表单处理
     if (form) {
       form.addEventListener('submit', (e) => {
@@ -692,6 +709,24 @@ export const UI = {
   },
 
   /**
+   * 更新字数计数器
+   */
+  updateCharCounts() {
+    const modal = document.getElementById('modal-habit');
+    const nameInput = modal.querySelector('#habit-name');
+    const sloganInput = modal.querySelector('#habit-slogan');
+    const nameCount = modal.querySelector('#habit-name + .char-count');
+    const sloganCount = modal.querySelector('#habit-slogan + .char-count');
+
+    if (nameInput && nameCount) {
+      nameCount.textContent = `${nameInput.value.length}/10`;
+    }
+    if (sloganInput && sloganCount) {
+      sloganCount.textContent = `${sloganInput.value.length}/25`;
+    }
+  },
+
+  /**
    * 打开习惯编辑/新建弹窗
    */
   openHabitModal(habitId = null) {
@@ -704,6 +739,7 @@ export const UI = {
     modal.removeAttribute('data-edit-id');
 
     form.reset();
+    this.updateCharCounts();
 
     // 预设高亮第一个表情和第一个颜色
     modal.querySelectorAll('.emoji-item').forEach(i => i.classList.remove('selected'));
@@ -762,6 +798,8 @@ export const UI = {
           modal.querySelector('#habit-reminder').value = '';
         }
       }
+
+      this.updateCharCounts();
     } else {
       // 新建模式
       modalTitle.textContent = '新建习惯';
