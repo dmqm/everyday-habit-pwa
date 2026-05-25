@@ -545,7 +545,7 @@ export const UI = {
           </div>
           <div class="manage-habit-meta">
             <h4>${h.name}</h4>
-            <p>📅 ${freqText} · ⏰ ${h.reminders && h.reminders.length > 0 ? h.reminders.join(', ') : '未设提醒'}</p>
+            <p>📅 ${freqText}</p>
           </div>
         </div>
         <div class="manage-habit-right">
@@ -688,7 +688,6 @@ export const UI = {
         const slogan = modal.querySelector('#habit-slogan').value.trim();
         const selectedEmojiEl = modal.querySelector('.emoji-item.selected');
         const selectedColorEl = modal.querySelector('.color-item.selected');
-        const reminderTime = modal.querySelector('#habit-reminder').value;
 
         if (!name) {
           alert('请输入习惯名称');
@@ -712,17 +711,13 @@ export const UI = {
           }
         }
 
-        // 解析提醒时间
-        const reminders = reminderTime ? [reminderTime] : [];
-
         const habitData = {
           name,
           slogan,
           icon,
           color,
           bgColor,
-          frequency,
-          reminders
+          frequency
         };
 
         if (habitId) {
@@ -820,13 +815,6 @@ export const UI = {
         } else {
           selectFreq.value = habit.frequency || 'daily';
           customFreqBox.style.display = 'none';
-        }
-
-        // 匹配提醒时间
-        if (habit.reminders && habit.reminders.length > 0) {
-          modal.querySelector('#habit-reminder').value = habit.reminders[0];
-        } else {
-          modal.querySelector('#habit-reminder').value = '';
         }
       }
 
