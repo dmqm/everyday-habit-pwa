@@ -122,7 +122,7 @@ gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
     "bgColor": "#FFF0F1",
     "slogan": "一日之计在于晨，今天也要元气满满！",
     "frequency": "daily", // 'daily' | 'weekdays' | 'weekends' | ["1", "3", "5"] (周一三五)
-    "reminders": ["07:00"],
+    "reminders": ["07:00"], // 已废弃，不再写入，仅保留以兼容旧数据
     "createdAt": 1716498733653
   }
 ]
