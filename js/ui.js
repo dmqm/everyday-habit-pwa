@@ -10,6 +10,7 @@ let selectedDate = new Date(); // 当前选中的日期
 let activeTab = 'today';       // 当前处于的 Tab 页: today, stats, habits, settings
 let confettiParticles = [];    // 纸屑粒子缓存
 let confettiAnimationId = null; // 纸屑动画 ID
+let audioCtx = null;            // AudioContext 单例
 
 export const UI = {
   init() {
@@ -263,42 +264,52 @@ export const UI = {
    */
   playSuccessSound() {
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
-      
-      // 第一个频率：低沉的波形
-      const osc1 = ctx.createOscillator();
-      const gain1 = ctx.createGain();
-      osc1.connect(gain1);
-      gain1.connect(ctx.destination);
-      
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(400, ctx.currentTime);
-      osc1.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.15);
-      
-      gain1.gain.setValueAtTime(0.2, ctx.currentTime);
-      gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-      
-      osc1.start();
-      osc1.stop(ctx.currentTime + 0.16);
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
 
-      // 第二个频率：短而清脆的谐波
+      if (!audioCtx) {
+        try {
+          audioCtx = new AC();
+        } catch (_) {
+          audioCtx = null;
+          return;
+        }
+      }
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(400, audioCtx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.15);
+
+      gain1.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+
+      osc1.start();
+      osc1.stop(audioCtx.currentTime + 0.16);
+
       setTimeout(() => {
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
         osc2.connect(gain2);
-        gain2.connect(ctx.destination);
-        
+        gain2.connect(audioCtx.destination);
+
         osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(600, ctx.currentTime);
-        osc2.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.12);
-        
-        gain2.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
-        
+        osc2.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc2.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.12);
+
+        gain2.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+
         osc2.start();
-        osc2.stop(ctx.currentTime + 0.13);
+        osc2.stop(audioCtx.currentTime + 0.13);
       }, 60);
 
     } catch (e) {
@@ -573,6 +584,16 @@ export const UI = {
     const btnCancel = modal.querySelector('#btn-habit-cancel');
     const form = modal.querySelector('#form-habit');
 
+    const nameInput = modal.querySelector('#habit-name');
+    const sloganInput = modal.querySelector('#habit-slogan');
+
+    if (nameInput) {
+      nameInput.addEventListener('input', () => this.updateCharCounts());
+    }
+    if (sloganInput) {
+      sloganInput.addEventListener('input', () => this.updateCharCounts());
+    }
+
     const handleAddClick = (e) => {
       if (e) e.preventDefault();
       this.openHabitModal();
@@ -691,6 +712,20 @@ export const UI = {
     }
   },
 
+  updateCharCounts() {
+    const modal = document.getElementById('modal-habit');
+    const nameEl = modal.querySelector('#habit-name');
+    const sloganEl = modal.querySelector('#habit-slogan');
+    const nameCount = document.getElementById('char-count-name');
+    const sloganCount = document.getElementById('char-count-slogan');
+    if (nameEl && nameCount) {
+      nameCount.textContent = `${nameEl.value.length}/10`;
+    }
+    if (sloganEl && sloganCount) {
+      sloganCount.textContent = `${sloganEl.value.length}/25`;
+    }
+  },
+
   /**
    * 打开习惯编辑/新建弹窗
    */
@@ -704,6 +739,7 @@ export const UI = {
     modal.removeAttribute('data-edit-id');
 
     form.reset();
+    this.updateCharCounts();
 
     // 预设高亮第一个表情和第一个颜色
     modal.querySelectorAll('.emoji-item').forEach(i => i.classList.remove('selected'));
@@ -771,6 +807,8 @@ export const UI = {
         cb.checked = true; // 默认自定义全选
       });
     }
+
+    this.updateCharCounts();
 
     modal.classList.add('active');
   },
