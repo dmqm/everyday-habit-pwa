@@ -207,6 +207,11 @@ export const UI = {
     if (isNowChecked) {
       cardElement.classList.add('completed');
       
+      // 触觉反馈
+      if (navigator.vibrate) {
+        navigator.vibrate(15);
+      }
+
       // 播放打卡音效
       const settings = Storage.getSettings();
       if (settings.soundEnabled) {
@@ -696,6 +701,8 @@ export const UI = {
     const selectFreq = modal.querySelector('#habit-frequency');
     const customFreqBox = modal.querySelector('.custom-freq-days');
 
+    modal.removeAttribute('data-edit-id');
+
     form.reset();
 
     // 预设高亮第一个表情和第一个颜色
@@ -757,7 +764,6 @@ export const UI = {
       }
     } else {
       // 新建模式
-      modal.removeAttribute('data-edit-id');
       modalTitle.textContent = '新建习惯';
       selectFreq.value = 'daily';
       customFreqBox.style.display = 'none';
