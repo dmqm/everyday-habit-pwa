@@ -538,10 +538,14 @@ export const UI = {
 
       // 绑定删除事件
       item.querySelector('.btn-delete-habit').addEventListener('click', () => {
-        if (confirm(`确定要删除“${h.name}”习惯吗？这会同时删除该习惯的所有打卡记录且不可恢复！`)) {
-          Storage.deleteHabit(h.id);
-          this.render();
-        }
+        this.showConfirm(
+          '删除习惯',
+          `确定要删除"${h.name}"吗？这会同时删除该习惯的所有打卡记录且不可恢复！`,
+          () => {
+            Storage.deleteHabit(h.id);
+            this.render();
+          }
+        );
       });
 
       habitsList.appendChild(item);
@@ -814,6 +818,36 @@ export const UI = {
   },
 
   /**
+   * iOS 风格底部抽屉确认弹窗
+   * @param {string} title 弹窗标题
+   * @param {string} message 弹窗内容
+   * @param {Function} onConfirm 确认回调
+   * @param {Function} onCancel 取消回调（可选）
+   */
+  showConfirm(title, message, onConfirm, onCancel) {
+    const modal = document.getElementById('modal-confirm');
+    const btnOk = document.getElementById('btn-confirm-ok');
+    const btnCancel = document.getElementById('btn-confirm-cancel');
+
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-message').textContent = message;
+
+    const cleanup = () => {
+      modal.classList.remove('active');
+      btnOk.removeEventListener('click', handleConfirm);
+      btnCancel.removeEventListener('click', handleCancel);
+    };
+
+    const handleConfirm = () => { cleanup(); if (onConfirm) onConfirm(); };
+    const handleCancel = () => { cleanup(); if (onCancel) onCancel(); };
+
+    btnOk.addEventListener('click', handleConfirm);
+    btnCancel.addEventListener('click', handleCancel);
+
+    modal.classList.add('active');
+  },
+
+  /**
    * 设置页面的各种事件绑定
    */
   bindSettingsEvents() {
@@ -874,11 +908,14 @@ export const UI = {
 
     // 数据清空
     panel.querySelector('#btn-data-clear').addEventListener('click', () => {
-      if (confirm('警告：此操作将彻底删除所有习惯和历史打卡数据，恢复到初始默认状态！确认继续？')) {
-        Storage.clearAll();
-        alert('数据已重置。');
-        window.location.reload();
-      }
+      this.showConfirm(
+        '重置数据',
+        '此操作将彻底删除所有习惯和历史打卡数据，恢复到初始默认状态。确认继续？',
+        () => {
+          Storage.clearAll();
+          window.location.reload();
+        }
+      );
     });
 
     // 统计页面的习惯和时间范围切换监听

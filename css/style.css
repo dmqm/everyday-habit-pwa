@@ -868,6 +868,28 @@ input:checked + .slider:before {
   padding: 4px;
 }
 
+/* 确认弹窗样式 */
+.modal-confirm-content {
+  padding-bottom: 16px;
+}
+
+.confirm-message {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.confirm-actions {
+  margin-bottom: 0;
+}
+
+.confirm-actions .btn {
+  flex: 1;
+  font-size: 15px;
+  padding: 12px 0;
+}
+
 /* 弹窗内的表单布局 */
 .form-group {
   display: flex;
