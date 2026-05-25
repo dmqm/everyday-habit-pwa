@@ -347,6 +347,20 @@
     </div>
   </div>
 
+  <!-- iOS 风格确认弹窗 -->
+  <div class="modal" id="modal-confirm">
+    <div class="modal-content modal-confirm-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="confirm-title">确认操作</h3>
+      </div>
+      <p class="confirm-message" id="confirm-message"></p>
+      <div class="modal-actions confirm-actions">
+        <button type="button" class="btn btn-secondary" id="btn-confirm-cancel">取消</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-ok">确认</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 初始化逻辑 -->
   <script type="module">
     import { UI } from './js/ui.js';
