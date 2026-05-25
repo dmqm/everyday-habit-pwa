@@ -321,26 +321,27 @@ export const UI = {
     if (!calendarContainer) return;
 
     calendarContainer.innerHTML = '';
-    
-    // 我们渲染当前选中日期所在的周，或者前后几天。
-    // 为了更好的 iOS 体验，我们渲染“今天”及前后各 3 天，共 7 天。
-    const today = new Date();
-    const daysToShow = 7;
-    const startDay = new Date(selectedDate);
-    startDay.setDate(startDay.getDate() - 3); // 往前数 3 天
 
+    const today = new Date();
     const weekdayNames = ['日', '一', '二', '三', '四', '五', '六'];
 
-    for (let i = 0; i < daysToShow; i++) {
+    // 渲染 ±2 周共 21 天，最小可行滑动方案
+    const totalDays = 21;
+    const startDay = new Date(selectedDate);
+    startDay.setDate(startDay.getDate() - 10); // 当前选中日前 10 天
+
+    let selectedDayEl = null;
+
+    for (let i = 0; i < totalDays; i++) {
       const currentDay = new Date(startDay);
       currentDay.setDate(startDay.getDate() + i);
 
       const isSelected = AppCore.getLocalDateString(currentDay) === AppCore.getLocalDateString(selectedDate);
       const isRealToday = AppCore.getLocalDateString(currentDay) === AppCore.getLocalDateString(today);
-      
+
       const dayEl = document.createElement('div');
       dayEl.className = `calendar-day ${isSelected ? 'selected' : ''} ${isRealToday ? 'is-today' : ''}`;
-      
+
       dayEl.innerHTML = `
         <span class="day-name">${weekdayNames[currentDay.getDay()]}</span>
         <span class="day-number">${currentDay.getDate()}</span>
@@ -352,6 +353,15 @@ export const UI = {
       });
 
       calendarContainer.appendChild(dayEl);
+
+      if (isSelected) selectedDayEl = dayEl;
+    }
+
+    // 滚动到当前选中日（屏幕中央对齐）
+    if (selectedDayEl) {
+      requestAnimationFrame(() => {
+        selectedDayEl.scrollIntoView({ inline: 'center', behavior: 'instant' });
+      });
     }
   },
 
