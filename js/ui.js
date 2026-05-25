@@ -397,6 +397,7 @@ export const UI = {
         panel.querySelector('.habit-details-card').style.display = 'none';
       } else {
         panel.querySelector('.habit-details-card').style.display = 'block';
+        selector.innerHTML = '<option value="__all__">全部习惯</option>';
         habits.forEach(h => {
           const opt = document.createElement('option');
           opt.value = h.id;
@@ -404,11 +405,10 @@ export const UI = {
           selector.appendChild(opt);
         });
 
-        // 还原上一次选择，或者默认选择第一个
-        if (lastSelectedValue && habits.some(h => h.id === lastSelectedValue)) {
+        if (lastSelectedValue && (lastSelectedValue === '__all__' || habits.some(h => h.id === lastSelectedValue))) {
           selector.value = lastSelectedValue;
         } else {
-          selector.value = habits[0].id;
+          selector.value = '__all__';
         }
       }
     }
@@ -445,7 +445,7 @@ export const UI = {
   },
 
   /**
-   * 渲染选定习惯的具体细节及日历图
+   * 渲染当月打卡热力图
    */
   renderSelectedHabitStats() {
     const panel = document.getElementById('panel-stats');
@@ -454,69 +454,79 @@ export const UI = {
 
     const habitId = selector.value;
     const habits = Storage.getHabits();
-    const habit = habits.find(h => h.id === habitId);
-    if (!habit) return;
-
-    const stats = AppCore.getHabitStats(habitId);
-    if (!stats) return;
-
-    // 渲染卡片基础信息
+    const records = Storage.getRecords();
     const detailCard = panel.querySelector('.habit-details-card');
-    detailCard.style.setProperty('--theme-color', habit.color);
-    detailCard.style.setProperty('--theme-bg', habit.bgColor);
 
+    // 如果是全部习惯，使用默认主题色
+    if (habitId === '__all__') {
+      detailCard.style.setProperty('--theme-color', '#38BDF8');
+      detailCard.style.setProperty('--theme-bg', '#E0F2FE');
+    } else {
+      const habit = habits.find(h => h.id === habitId);
+      if (!habit) return;
+      detailCard.style.setProperty('--theme-color', habit.color);
+      detailCard.style.setProperty('--theme-bg', habit.bgColor);
+    }
 
-
-    // 渲染近期打卡记录网格
     const calendarGrid = detailCard.querySelector('.calendar-month-grid');
     const calendarMonthTitle = detailCard.querySelector('.calendar-month-title');
     if (!calendarGrid) return;
 
-    const rangeSelector = panel.querySelector('#stats-range-select');
-    const range = rangeSelector ? parseInt(rangeSelector.value) : 30;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth(); // 0-based
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDayOfWeek = new Date(year, month, 1).getDay(); // 0=Sun
 
-    // 动态计算列数以自适应紧凑的网格显示
-    let columns = 7;
-    if (range === 7) columns = 7;
-    else if (range === 30) columns = 6;
-    else if (range === 100) columns = 10;
-
-    calendarGrid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    calendarGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
     calendarGrid.innerHTML = '';
-    calendarMonthTitle.textContent = `近期 ${range} 天打卡记录`;
+    calendarMonthTitle.textContent = `${year}年${month + 1}月打卡热力图`;
 
-    // 生成最近 range 天的日期数组 (从 range-1 天前到今天)
-    const dates = [];
-    for (let i = range - 1; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      dates.push(d);
-    }
-
-    // 渲染网格
-    dates.forEach(d => {
-      const dateStr = AppCore.getLocalDateString(d);
-      const isDone = stats.history.includes(dateStr);
-      const isActive = AppCore.isHabitActiveOnDate(habit, d);
-      const isToday = dateStr === AppCore.getLocalDateString(new Date());
-
+    // 星期头
+    const dayHeaders = ['一', '二', '三', '四', '五', '六', '日'];
+    dayHeaders.forEach(h => {
       const el = document.createElement('div');
-      el.className = `calendar-grid-day ${isDone ? 'completed' : ''} ${isActive ? 'active' : 'inactive'} ${isToday ? 'is-today' : ''}`;
-      
-      const dayNum = d.getDate();
-      const displayText = dayNum === 1 ? `${d.getMonth() + 1}/${dayNum}` : `${dayNum}`;
-
-      if (isDone) {
-        el.style.backgroundColor = habit.color;
-        el.style.color = '#FFFFFF';
-        el.innerHTML = '<span class="check-mark">✓</span>';
-      } else {
-        el.innerHTML = `<span>${displayText}</span>`;
-      }
-      
-      el.title = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      el.className = 'calendar-grid-header';
+      el.textContent = h;
       calendarGrid.appendChild(el);
     });
+
+    // 当月的第一天之前补空白
+    const startOffset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+    for (let i = 0; i < startOffset; i++) {
+      const el = document.createElement('div');
+      el.className = 'calendar-grid-day empty';
+      calendarGrid.appendChild(el);
+    }
+
+    // 获取某日的打卡计数
+    const getCheckinCount = (dateStr) => {
+      const dayRecords = records[dateStr] || [];
+      if (habitId === '__all__') {
+        return dayRecords.length;
+      }
+      return dayRecords.includes(habitId) ? 1 : 0;
+    };
+
+    const todayStr = AppCore.getLocalDateString(now);
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const dateStr = AppCore.getLocalDateString(date);
+      const count = getCheckinCount(dateStr);
+      const isToday = dateStr === todayStr;
+
+      const el = document.createElement('div');
+      let intensityClass = 'intensity-0';
+      if (count >= 3) intensityClass = 'intensity-3';
+      else if (count >= 2) intensityClass = 'intensity-2';
+      else if (count >= 1) intensityClass = 'intensity-1';
+
+      el.className = `calendar-grid-day ${intensityClass} ${isToday ? 'is-today' : ''}`;
+      el.textContent = day;
+      el.title = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}: ${count}次打卡`;
+      calendarGrid.appendChild(el);
+    }
   },
 
 
@@ -954,13 +964,6 @@ export const UI = {
     const statsSelector = document.getElementById('stats-habit-select');
     if (statsSelector) {
       statsSelector.addEventListener('change', () => {
-        this.renderSelectedHabitStats();
-      });
-    }
-
-    const rangeSelector = document.getElementById('stats-range-select');
-    if (rangeSelector) {
-      rangeSelector.addEventListener('change', () => {
         this.renderSelectedHabitStats();
       });
     }
