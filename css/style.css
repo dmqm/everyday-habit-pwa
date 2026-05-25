@@ -161,20 +161,19 @@ body {
 
 /* iOS 风格顶部周历 */
 .week-calendar {
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 12px;
-  gap: 6px;
 }
 
 .week-days-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   gap: 6px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
 }
 
 .week-days-container::-webkit-scrollbar {
@@ -182,12 +181,13 @@ body {
 }
 
 .calendar-day {
-  flex: 1;
-  min-width: 36px;
+  flex: 0 0 auto;
+  min-width: 44px;
+  width: 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px 2px;
+  padding: 6px 2px;
   background-color: var(--bg-secondary);
   border-radius: 8px;
   box-shadow: var(--shadow-sm);
@@ -195,6 +195,7 @@ body {
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   -webkit-user-select: none;
+  scroll-snap-align: center;
 }
 
 .calendar-day .day-name {
