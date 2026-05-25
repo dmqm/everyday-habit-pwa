@@ -90,9 +90,9 @@
           <span class="stat-box-sub" id="stat-max-streak-habit">无</span>
         </div>
         <div class="stat-box">
-          <span class="stat-box-title">今天日期</span>
-          <span class="stat-box-value" style="font-size: 16px; padding-top: 6px;" id="stat-today-date"></span>
-          <span class="stat-box-sub"></span>
+          <span class="stat-box-title">本周完成</span>
+          <span class="stat-box-value" id="stat-weekly-completion">—</span>
+          <span class="stat-box-sub" id="stat-weekly-detail"></span>
         </div>
       </div>
 
@@ -358,20 +358,6 @@
   <!-- 初始化逻辑 -->
   <script type="module">
     import { UI } from './js/ui.js';
-    
-    // 渲染打卡统计页的日期文字
-    const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const date = String(today.getDate()).padStart(2, '0');
-    const dayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-    
-    document.getElementById('stat-today-date').textContent = `${month}-${date}`;
-    const weekSub = document.querySelector('#stat-today-date + .stat-box-sub');
-    if (weekSub) {
-      weekSub.textContent = dayNames[today.getDay()];
-    }
-
-    // 初始化 UI
     UI.init();
   </script>
 

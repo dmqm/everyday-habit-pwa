@@ -228,6 +228,47 @@ export const AppCore = {
   },
 
   /**
+   * 计算本周完成率：本周已打卡次数 / 本周应打卡次数
+   */
+  getWeeklyCompletion() {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0=Sun, 1-6=Mon-Sat
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + mondayOffset);
+    monday.setHours(0, 0, 0, 0);
+
+    const habits = Storage.getHabits();
+    const records = Storage.getRecords();
+
+    let totalExpected = 0;
+    let totalCompleted = 0;
+    const end = new Date(today);
+    end.setHours(23, 59, 59, 999);
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      if (date > end) break;
+
+      const dateStr = this.getLocalDateString(date);
+      const activeHabits = habits.filter(h => this.isHabitActiveOnDate(h, date));
+      const checkedIn = records[dateStr] || [];
+
+      totalExpected += activeHabits.length;
+      for (const h of activeHabits) {
+        if (checkedIn.includes(h.id)) totalCompleted++;
+      }
+    }
+
+    return {
+      completed: totalCompleted,
+      total: totalExpected,
+      percent: totalExpected > 0 ? Math.round((totalCompleted / totalExpected) * 100) : 0
+    };
+  },
+
+  /**
    * 获取所有成就徽章的状态
    */
   getBadges() {
