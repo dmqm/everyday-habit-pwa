@@ -368,6 +368,23 @@ export const UI = {
     panel.querySelector('#stat-max-streak').textContent = `${globalStats.maxStreak}天`;
     panel.querySelector('#stat-max-streak-habit').textContent = globalStats.maxStreakHabit;
 
+    // 本周完成率
+    const weekly = AppCore.getWeeklyCompletion();
+    const weeklyEl = panel.querySelector('#stat-weekly-completion');
+    const weeklyDetail = panel.querySelector('#stat-weekly-detail');
+    if (weeklyEl) {
+      if (weekly.total === 0) {
+        weeklyEl.textContent = '—';
+      } else {
+        weeklyEl.textContent = `${weekly.percent}%`;
+      }
+    }
+    if (weeklyDetail) {
+      const today = new Date();
+      const dow = today.getDay() === 0 ? 7 : today.getDay();
+      weeklyDetail.textContent = `本周第 ${dow} 天`;
+    }
+
     // 2. 渲染习惯下拉列表供查看详细统计
     const habits = Storage.getHabits();
     const selector = panel.querySelector('#stats-habit-select');
