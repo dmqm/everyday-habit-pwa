@@ -83,10 +83,9 @@ export const UI = {
     }
 
     // 动态更新 theme-color meta 标签，确保覆盖手动锁定主题场景
-    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeColorMeta) {
-      themeColorMeta.setAttribute('content', isDark ? '#0A0A0C' : '#F4F7F6');
-    }
+    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+      meta.setAttribute('content', isDark ? '#0A0A0C' : '#F4F7F6');
+    });
   },
 
   /**
