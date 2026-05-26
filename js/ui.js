@@ -112,22 +112,7 @@ export const UI = {
     // 1. 渲染顶部周历
     this.renderWeekCalendar();
 
-    // 2. 渲染打卡进度卡片
-    const progress = AppCore.getTodayProgress();
-    const progressText = panel.querySelector('.progress-text');
-    const progressBar = panel.querySelector('.progress-bar-fill');
-    
-    if (progressText && progressBar) {
-      if (progress.total === 0) {
-        progressText.innerHTML = '今天没有需要打卡的习惯哦 ☕';
-        progressBar.style.width = '0%';
-      } else {
-        progressText.innerHTML = `今日已达成 <strong>${progress.completed}</strong> / ${progress.total} (${progress.percent}%)`;
-        progressBar.style.width = `${progress.percent}%`;
-      }
-    }
-
-    // 3. 渲染习惯卡片列表
+    // 2. 渲染习惯卡片列表
     const habitsContainer = panel.querySelector('.today-habits-list');
     if (!habitsContainer) return;
 
@@ -228,16 +213,6 @@ export const UI = {
       }
     } else {
       cardElement.classList.remove('completed');
-    }
-
-    // 更新今日进度条
-    const progress = AppCore.getTodayProgress();
-    const panel = document.getElementById('panel-today');
-    const progressText = panel.querySelector('.progress-text');
-    const progressBar = panel.querySelector('.progress-bar-fill');
-    if (progressText && progressBar) {
-      progressText.innerHTML = `今日已达成 <strong>${progress.completed}</strong> / ${progress.total} (${progress.percent}%)`;
-      progressBar.style.width = `${progress.percent}%`;
     }
 
     // 局部更新卡片内的 streak 数据
@@ -425,33 +400,6 @@ export const UI = {
 
     // 3. 渲染单个习惯的打卡统计与近期记录
     this.renderSelectedHabitStats();
-
-    // 4. 渲染成就徽章
-    this.renderBadges();
-  },
-
-  renderBadges() {
-    const grid = document.getElementById('badges-grid');
-    const section = document.getElementById('badges-section');
-    if (!grid || !section) return;
-
-    const badges = AppCore.getBadges();
-    if (!badges || badges.length === 0) {
-      section.style.display = 'none';
-      return;
-    }
-    section.style.display = 'block';
-
-    grid.innerHTML = badges.map(b => {
-      const lockedClass = b.isUnlocked ? '' : 'locked';
-      return `
-        <div class="badge-item ${lockedClass}">
-          <span class="badge-icon">${b.icon}</span>
-          <span class="badge-name">${b.name}</span>
-          <span class="badge-desc">${b.desc}</span>
-        </div>
-      `;
-    }).join('');
   },
 
   /**

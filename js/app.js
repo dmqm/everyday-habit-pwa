@@ -269,7 +269,7 @@ export const AppCore = {
   },
 
   /**
-   * 获取所有成就徽章的状态
+   * 格式化 Date 为本地字符串 "YYYY-MM-DD"
    */
   getBadges() {
     const habits = Storage.getHabits();
