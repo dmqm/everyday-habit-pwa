@@ -896,12 +896,14 @@ export const UI = {
     let timer = null;
     let startX = 0;
     let startY = 0;
+    let longPressFired = false;
 
     const onTouchStart = (e) => {
       const touch = e.touches[0];
       startX = touch.clientX;
       startY = touch.clientY;
       timer = setTimeout(() => {
+        longPressFired = true;
         if (navigator.vibrate) {
           navigator.vibrate(20);
         }
@@ -926,6 +928,14 @@ export const UI = {
         timer = null;
       }
     };
+
+    element.addEventListener('click', (e) => {
+      if (longPressFired) {
+        e.stopPropagation();
+        e.preventDefault();
+        longPressFired = false;
+      }
+    }, true);
 
     element.addEventListener('touchstart', onTouchStart, { passive: true });
     element.addEventListener('touchmove', onTouchMove, { passive: true });
