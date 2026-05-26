@@ -713,16 +713,133 @@ html.dark .habit-card.completed {
   font-weight: 500;
 }
 
-/* 输入控件与按钮样式 */
-select, input[type="text"], input[type="time"] {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
+/* 自定义下拉选择框包装器 */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 8px 28px 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-color);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  outline: none;
+  font-size: 14px;
+  font-weight: 500;
   font-family: inherit;
-  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.select-wrapper select:focus {
+  border-color: var(--accent-color);
+}
+
+.select-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-left: 1.5px solid var(--text-tertiary);
+  border-bottom: 1.5px solid var(--text-tertiary);
+  transform: translateY(-75%) rotate(-45deg);
+  pointer-events: none;
+}
+
+/* FAB (Floating Action Button) */
+.fab {
+  position: fixed;
+  right: 20px;
+  bottom: calc(70px + var(--safe-area-bottom));
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 4px 16px rgba(36, 177, 183, 0.35), 0 2px 4px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 0.25s ease,
+              opacity 0.3s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fab:active {
+  transform: scale(0.9);
+  box-shadow: 0 2px 8px rgba(36, 177, 183, 0.35);
+}
+
+.fab.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.5);
+}
+
+/* ActionSheet 样式 */
+.modal-actionsheet-content {
+  padding-bottom: calc(8px + var(--safe-area-bottom));
+}
+
+.actionsheet-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.actionsheet-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border-color);
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  transition: background-color 0.15s;
+}
+
+.actionsheet-item:first-child {
+  border-top: none;
+}
+
+.actionsheet-item:active {
+  background-color: var(--bg-primary);
+}
+
+.actionsheet-item.danger {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+.actionsheet-actions {
+  margin-top: 8px;
+}
+
+.actionsheet-actions .btn {
+  flex: 1;
+  font-size: 15px;
+  padding: 12px 0;
 }
 
 /* 开关滑块样式 (Switch Toggle) */
