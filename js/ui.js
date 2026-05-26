@@ -62,19 +62,30 @@ export const UI = {
   applyTheme() {
     const settings = Storage.getSettings();
     const htmlEl = document.documentElement;
-    
+    let isDark = false;
+
     if (settings.theme === 'dark') {
       htmlEl.classList.add('dark');
+      isDark = true;
     } else if (settings.theme === 'light') {
       htmlEl.classList.remove('dark');
+      isDark = false;
     } else {
       // 自动模式
       const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (isSystemDark) {
         htmlEl.classList.add('dark');
+        isDark = true;
       } else {
         htmlEl.classList.remove('dark');
+        isDark = false;
       }
+    }
+
+    // 动态更新 theme-color meta 标签，确保覆盖手动锁定主题场景
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', isDark ? '#0A0A0C' : '#F4F7F6');
     }
   },
 
