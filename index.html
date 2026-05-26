@@ -65,6 +65,25 @@
 
     <!-- TAB 2: 统计大盘页面 -->
     <main class="tab-panel" id="panel-stats">
+      <!-- 当月打卡热力图 -->
+      <section class="habit-details-card">
+        <div class="detail-header" style="flex-wrap: wrap; gap: 8px;">
+          <h3 class="section-title" style="margin-bottom: 0;">📊 习惯分析</h3>
+          <div style="display: flex; gap: 8px; flex: 1; justify-content: flex-end;">
+            <div class="detail-selector select-wrapper" style="max-width: 160px;">
+              <select id="stats-habit-select">
+                <!-- JS 动态渲染 -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="calendar-month-title">当月打卡热力图</div>
+        <div class="calendar-month-grid">
+          <!-- JS 动态渲染 -->
+        </div>
+      </section>
+
       <!-- 数据概览 -->
       <div class="stats-dashboard">
         <div class="stat-box">
@@ -88,25 +107,6 @@
           <span class="stat-box-sub" id="stat-weekly-detail"></span>
         </div>
       </div>
-
-      <!-- 当月打卡热力图 -->
-      <section class="habit-details-card">
-        <div class="detail-header" style="flex-wrap: wrap; gap: 8px;">
-          <h3 class="section-title" style="margin-bottom: 0;">📊 习惯分析</h3>
-          <div style="display: flex; gap: 8px; flex: 1; justify-content: flex-end;">
-            <div class="detail-selector select-wrapper" style="max-width: 160px;">
-              <select id="stats-habit-select">
-                <!-- JS 动态渲染 -->
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="calendar-month-title">当月打卡热力图</div>
-        <div class="calendar-month-grid">
-          <!-- JS 动态渲染 -->
-        </div>
-      </section>
 
     </main>
 

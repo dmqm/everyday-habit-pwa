@@ -123,7 +123,7 @@ body {
 
 /* iOS 风格顶部周历 */
 .week-calendar {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .week-days-container {
@@ -133,26 +133,24 @@ body {
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  gap: 6px;
+  gap: 4px;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
 }
 
 .week-days-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
 }
 
 .calendar-day {
   flex: 0 0 auto;
-  min-width: 44px;
-  width: 44px;
+  min-width: 38px;
+  width: 38px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6px 2px;
-  background-color: var(--bg-secondary);
+  padding: 4px 2px;
   border-radius: 8px;
-  box-shadow: var(--shadow-sm);
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
@@ -161,14 +159,14 @@ body {
 }
 
 .calendar-day .day-name {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-secondary);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   font-weight: 500;
 }
 
 .calendar-day .day-number {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -191,7 +189,7 @@ body {
 .today-habits-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
 .habit-card {
@@ -203,7 +201,7 @@ body {
   align-items: center;
   background-color: var(--bg-secondary);
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 12px 14px;
   box-shadow: var(--shadow-md);
   border-left: 4px solid var(--theme-color);
   cursor: pointer;
@@ -246,7 +244,7 @@ body {
 }
 
 .habit-card-name {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -319,30 +317,30 @@ html.dark .habit-card.completed {
 .stats-dashboard {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 4px;
+  margin-top: 10px;
 }
 
 .stat-box {
   background-color: var(--bg-secondary);
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 8px 8px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   user-select: none;
   -webkit-user-select: none;
 }
 
 .stat-box-title {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
   font-weight: 500;
 }
 
 .stat-box-value {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.5px;
@@ -357,7 +355,7 @@ html.dark .habit-card.completed {
 .habit-details-card {
   background-color: var(--bg-secondary);
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 14px 14px;
   box-shadow: var(--shadow-md);
   margin-bottom: 12px;
   transition: all 0.3s;
@@ -418,39 +416,39 @@ html.dark .habit-card.completed {
 
 /* 月历打卡网络图 */
 .calendar-month-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
 .calendar-month-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 6px;
   justify-items: center;
 }
 
 .calendar-grid-header {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-tertiary);
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .calendar-grid-empty {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
 }
 
 .calendar-grid-day {
   width: 100%;
-  max-width: 28px;
+  max-width: 34px;
   aspect-ratio: 1;
   border-radius: 50%;
   display: flex;
