@@ -101,7 +101,7 @@
         <div class="detail-header" style="flex-wrap: wrap; gap: 8px;">
           <h3 class="section-title" style="margin-bottom: 0;">📊 习惯分析</h3>
           <div style="display: flex; gap: 8px; flex: 1; justify-content: flex-end;">
-            <div class="detail-selector" style="max-width: 160px;">
+            <div class="detail-selector select-wrapper" style="max-width: 160px;">
               <select id="stats-habit-select">
                 <!-- JS 动态渲染 -->
               </select>
@@ -137,10 +137,6 @@
         <div class="settings-group" style="padding: 8px 12px; margin-bottom: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <span class="settings-row-label" style="font-weight: 600;">我的习惯</span>
-            <button class="btn btn-primary btn-sm" id="btn-settings-add-habit">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" style="margin-right: 4px; display: inline-block; vertical-align: middle;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              新建习惯
-            </button>
           </div>
           <div class="manage-habits-list">
             <!-- JS 动态渲染 -->
@@ -152,11 +148,13 @@
         <div class="settings-group">
           <div class="settings-row">
             <span class="settings-row-label">外观主题</span>
+            <div class="select-wrapper">
             <select id="settings-theme">
               <option value="auto">跟随系统</option>
               <option value="light">清新明亮 (浅色)</option>
               <option value="dark">暗黑视网膜 (深色)</option>
             </select>
+            </div>
           </div>
           <div class="settings-row">
             <span class="settings-row-label">打卡音效</span>
@@ -167,10 +165,12 @@
           </div>
           <div class="settings-row">
             <span class="settings-row-label">打卡动画</span>
+            <div class="select-wrapper">
             <select id="settings-anim">
               <option value="confetti">彩色五彩纸屑</option>
               <option value="none">无动画</option>
             </select>
+            </div>
           </div>
         </div>
 
@@ -234,6 +234,28 @@
         <span>设置</span>
       </div>
     </nav>
+
+    <!-- FAB 悬浮新建按钮 -->
+    <button class="fab" id="fab-add-habit" aria-label="新建习惯">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- iOS 风格 ActionSheet -->
+  <div class="modal" id="modal-actionsheet">
+    <div class="modal-content modal-actionsheet-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="actionsheet-title"></h3>
+      </div>
+      <div class="actionsheet-items" id="actionsheet-items">
+      </div>
+      <div class="modal-actions actionsheet-actions">
+        <button type="button" class="btn btn-secondary" id="btn-actionsheet-cancel">取消</button>
+      </div>
+    </div>
   </div>
 
   <!-- iOS 底部抽屉风格弹窗 (新建 / 编辑习惯) -->
@@ -305,12 +327,14 @@
         <!-- 频次设置 -->
         <div class="form-group">
           <label for="habit-frequency">打卡频次</label>
+          <div class="select-wrapper">
           <select id="habit-frequency">
             <option value="daily">每天打卡</option>
             <option value="weekdays">仅工作日 (周一至周五)</option>
             <option value="weekends">仅周末 (周六与周日)</option>
             <option value="custom">自定义打卡天...</option>
           </select>
+          </div>
           <!-- 自定义周几多选框 -->
           <div class="custom-freq-days" style="display: none;">
             <label><input type="checkbox" value="1" checked><span>一</span></label>
