@@ -3,6 +3,7 @@
 本项目是一款高颜值、极简设计的 Progressive Web App（PWA）习惯追踪工具，设计灵感来自 iOS 原生「小日常」 App。项目采用纯原生前端技术栈开发，支持 100% 离线运行、精美 Canvas 五彩纸屑打卡特效、智能连续天数统计以及本地数据备份/恢复。
 
 👉 **在线演示地址**：[https://dmqm.github.io/everyday-habit-pwa/](https://dmqm.github.io/everyday-habit-pwa/)  
+👉 **应用中心（聚合入口）**：[https://dmqm.github.io/everyday-habit-pwa/hub/](https://dmqm.github.io/everyday-habit-pwa/hub/)  
 👉 **分发仓库地址**：[https://github.com/dmqm/everyday-habit-pwa](https://github.com/dmqm/everyday-habit-pwa)
 
 ---
@@ -45,6 +46,7 @@
 everyday-habit-pwa/
 ├── .gitignore          # Git 忽略配置
 ├── README.md           # 项目详细说明文档
+├── hub/                # PWA 应用聚合门户（链接到其他子应用）
 ├── index.html          # 单页面入口 HTML 结构
 ├── manifest.json       # PWA 配置文件（包含图标及色彩配置）
 ├── sw.js               # Service Worker 离线缓存核心脚本

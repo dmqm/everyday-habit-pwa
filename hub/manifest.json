@@ -1,0 +1,26 @@
+{
+  "name": "应用中心 - PWA Hub",
+  "short_name": "应用中心",
+  "description": "聚合小日常、我的物品、ImageHub 等本地 PWA 应用的一站式入口",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f2f7",
+  "theme_color": "#007aff",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

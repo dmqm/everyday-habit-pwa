@@ -43,7 +43,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
+          if (cache !== CACHE_NAME && !cache.startsWith('pwa-hub-')) {
             console.log('[Service Worker] Clearing old cache', cache);
             return caches.delete(cache);
           }
